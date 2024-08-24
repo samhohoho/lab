@@ -7,6 +7,7 @@ import com.samhoho.lab.repositories.JwtUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
     @Autowired
     JwtUserRepository jwtUserRepository;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody SignUpRequest signUpRequest) {
@@ -23,7 +26,9 @@ public class AuthController {
                     HttpStatus.BAD_REQUEST);
         }
 
-        JwtUser jwtUser = new JwtUser(signUpRequest.getEmail(), signUpRequest.getPassword());
+        JwtUser jwtUser = new JwtUser();
+        jwtUser.setEmail(signUpRequest.getEmail());
+        jwtUser.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
         jwtUserRepository.save(jwtUser);
         return ResponseEntity.ok(new ApiResponse(true, "User registered successfully"));
     }
