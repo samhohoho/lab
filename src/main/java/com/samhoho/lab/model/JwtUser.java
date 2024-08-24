@@ -39,8 +39,11 @@ public class JwtUser {
         this.password = password;
     }
 
-    public JwtUser( String email, String password) {
+    public JwtUser(String email, String password) {
         this.email = email;
         this.password = password;
+    }
+
+    public JwtUser() {
     }
 }
