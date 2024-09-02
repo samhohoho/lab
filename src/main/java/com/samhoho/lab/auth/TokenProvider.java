@@ -20,6 +20,9 @@ public class TokenProvider {
     @Value("${security.jwt.secret-key}")
     private String secretKey;
 
+    @Value("${security.jwt.expiration-time}")
+    private long jwtExpiration;
+
     private SecretKey key() {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
     }
@@ -28,6 +31,8 @@ public class TokenProvider {
         String username = userDetails.getUsername();
         String jwt = Jwts.builder()
                 .subject(username)
+                .expiration(new Date (System.currentTimeMillis() + jwtExpiration))
+                .issuedAt(new Date(System.currentTimeMillis()))
                 .signWith(key())
                 .compact();
         return jwt;
