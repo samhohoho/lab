@@ -5,9 +5,8 @@ import com.samhoho.lab.dto.ApiResponse;
 import com.samhoho.lab.dto.AuthenticationResponse;
 import com.samhoho.lab.dto.LoginRequest;
 import com.samhoho.lab.dto.SignUpRequest;
-import com.samhoho.lab.model.JwtUser;
+import com.samhoho.lab.model.User;
 import com.samhoho.lab.repositories.JwtUserRepository;
-import com.samhoho.lab.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -56,10 +55,10 @@ public class AuthController {
                     HttpStatus.BAD_REQUEST);
         }
 
-        JwtUser jwtUser = new JwtUser();
-        jwtUser.setEmail(signUpRequest.getEmail());
-        jwtUser.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
-        jwtUserRepository.save(jwtUser);
+        User user = new User();
+        user.setEmail(signUpRequest.getEmail());
+        user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
+        jwtUserRepository.save(user);
         return ResponseEntity.ok(new ApiResponse(true, "User registered successfully"));
     }
 }

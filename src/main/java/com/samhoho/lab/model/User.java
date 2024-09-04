@@ -4,22 +4,23 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "users")
-public class JwtUser {
+public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
-    @Column(name = "email")
+    @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(name = "password")
+//    @Column(name = "password")
+    @Column(nullable = false)
     private String password;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -39,11 +40,11 @@ public class JwtUser {
         this.password = password;
     }
 
-    public JwtUser(String email, String password) {
+    public User(String email, String password) {
         this.email = email;
         this.password = password;
     }
 
-    public JwtUser() {
+    public User() {
     }
 }
