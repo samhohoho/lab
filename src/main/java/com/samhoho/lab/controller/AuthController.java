@@ -6,7 +6,7 @@ import com.samhoho.lab.dto.AuthenticationResponse;
 import com.samhoho.lab.dto.LoginRequest;
 import com.samhoho.lab.dto.SignUpRequest;
 import com.samhoho.lab.model.User;
-import com.samhoho.lab.repositories.JwtUserRepository;
+import com.samhoho.lab.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AuthController {
     @Autowired
-    JwtUserRepository jwtUserRepository;
+    UserRepository userRepository;
     @Autowired
     PasswordEncoder passwordEncoder;
     @Autowired
@@ -50,7 +50,7 @@ public class AuthController {
 
     @PostMapping("/api/auth/signup")
     public ResponseEntity<?> registerUser(@RequestBody SignUpRequest signUpRequest) {
-        if (jwtUserRepository.findUserByEmail(signUpRequest.getEmail()) != null) {
+        if (userRepository.findUserByEmail(signUpRequest.getEmail()) != null) {
             return new ResponseEntity<>(new ApiResponse(false, "Email Address already in use!"),
                     HttpStatus.BAD_REQUEST);
         }
@@ -58,7 +58,7 @@ public class AuthController {
         User user = new User();
         user.setEmail(signUpRequest.getEmail());
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
-        jwtUserRepository.save(user);
+        userRepository.save(user);
         return ResponseEntity.ok(new ApiResponse(true, "User registered successfully"));
     }
 }

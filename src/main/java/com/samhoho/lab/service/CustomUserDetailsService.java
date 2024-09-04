@@ -1,7 +1,7 @@
 package com.samhoho.lab.service;
 
 import com.samhoho.lab.model.User;
-import com.samhoho.lab.repositories.JwtUserRepository;
+import com.samhoho.lab.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,11 +13,11 @@ import java.util.ArrayList;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
-    JwtUserRepository jwtUserRepository;
+    UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = jwtUserRepository.findUserByEmail(email);
+        User user = userRepository.findUserByEmail(email);
         return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), new ArrayList<>());
     }
 }
