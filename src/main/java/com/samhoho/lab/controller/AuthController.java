@@ -50,7 +50,7 @@ public class AuthController {
 
     @PostMapping("/api/auth/signup")
     public ResponseEntity<?> registerUser(@RequestBody SignUpRequest signUpRequest) {
-        if (userRepository.findUserByEmail(signUpRequest.getEmail()) != null) {
+        if (userRepository.findByEmail(signUpRequest.getEmail()) != null) {
             return new ResponseEntity<>(new ApiResponse(false, "Email Address already in use!"),
                     HttpStatus.BAD_REQUEST);
         }
