@@ -44,10 +44,17 @@ public class CartService {
             existedCartItems = cartItemRepository.findAllByCart(cart);
         }
 
+        /**
+         * Objects are passed by reference id.
+         * So changes made in cartItem will reflect on
+         * cart.cartItem.
+         *
+         * After retrieving the existing cartItems, existedCartItems,
+         * it attempts to identify cartItemVm in cartItems and increase the quant.
+         * Otherwise create a new cartItem.
+         */
         for (CartItemVm cartItemVm : cartItemVms) {
             CartItem cartItem = getCartItemByProductId(existedCartItems, cartItemVm.productId());
-
-            //TODO: if you modify the CartItems from the second query (existedCartItems), will the changes reflect in the CartItems inside cart.getCartItems()?
             if (cartItem.getProductId() != null) {
                 cartItem.setQuantity(cartItem.getQuantity() + cartItemVm.quantity());
             } else {
