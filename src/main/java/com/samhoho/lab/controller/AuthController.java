@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
+
 @RestController
 public class AuthController {
     @Autowired
@@ -50,15 +52,16 @@ public class AuthController {
 
     @PostMapping("/api/auth/signup")
     public ResponseEntity<?> registerUser(@RequestBody SignUpRequest signUpRequest) {
-        if (userRepository.findByEmail(signUpRequest.getEmail()) != null) {
-            return new ResponseEntity<>(new ApiResponse(false, "Email Address already in use!"),
+        Optional<User> user = userRepository.findByEmail(signUpRequest.getEmail());
+        if (user.isPresent()) {
+            return new ResponseEntity<>(new ApiResponse(false, "wtf Email Address already in use!"),
                     HttpStatus.BAD_REQUEST);
         }
 
-        User user = new User();
-        user.setEmail(signUpRequest.getEmail());
-        user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
-        userRepository.save(user);
+        User newUser = new User();
+        newUser.setEmail(signUpRequest.getEmail());
+        newUser.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
+        userRepository.save(newUser);
         return ResponseEntity.ok(new ApiResponse(true, "User registered successfully"));
     }
 }
