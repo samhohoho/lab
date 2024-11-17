@@ -30,9 +30,21 @@ public class CartService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String customerId = auth.getName();
 
+        /**
+         * It will first retrieve the cart.
+         * If the cart doesn't exist, a new cart will be created.
+         *
+         * After retrieving the existing cartItems, existedCartItems,
+         * it attempts to identify cartItemVm in cartItems and increase the quant.
+         * Otherwise create a new cartItem.
+         *
+         * NOTE:
+         * Objects are passed by reference id.
+         * So changes made in cartItem will reflect on
+         * cart.cartItem.
+         */
         Cart cart = cartRepository.findByCustomerIdAndOrderIdIsNull(customerId).stream().findFirst().orElse(null);
         Set<CartItem> existedCartItems = new HashSet<>();
-        //TODO: check cartitem here
 
         if (cart == null) {
             cart = Cart.builder()
@@ -41,18 +53,9 @@ public class CartService {
                     .build();
             cart.setCreatedOn(ZonedDateTime.now());
         } else {
-            existedCartItems = cartItemRepository.findAllByCart(cart);
+            existedCartItems = cart.getCartItems();
         }
 
-        /**
-         * Objects are passed by reference id.
-         * So changes made in cartItem will reflect on
-         * cart.cartItem.
-         *
-         * After retrieving the existing cartItems, existedCartItems,
-         * it attempts to identify cartItemVm in cartItems and increase the quant.
-         * Otherwise create a new cartItem.
-         */
         for (CartItemVm cartItemVm : cartItemVms) {
             CartItem cartItem = getCartItemByProductId(existedCartItems, cartItemVm.productId());
             if (cartItem.getProductId() != null) {
@@ -65,9 +68,7 @@ public class CartService {
                 cart.getCartItems().add(cartItem);
             }
         }
-        //TODO: change the quantity without save
         cart = cartRepository.save(cart);
-        cartItemRepository.saveAll(cart.getCartItems());
     }
 
     private CartItem getCartItemByProductId(Set<CartItem> cartItems, Long productId) {
