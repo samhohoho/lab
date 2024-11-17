@@ -1,0 +1,28 @@
+name: my-ecommerce
+
+services:
+  app:
+    image: my-commerce:latest
+    build: .
+    container_name: app
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=example
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/ecommerce-db
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - JWT_SECRET_KEY="=============================secret================================="
+    ports:
+      - "8080:8080"
+
+  db:
+    image: postgres
+    container_name: db
+    restart: always
+    shm_size: 128mb
+    environment:
+      POSTGRES_PASSWORD: example
+      POSTGRES_DB: ecommerce-db
+    ports:
+      - "5433:5432"
